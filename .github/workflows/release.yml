@@ -33,13 +33,10 @@ jobs:
           toolchain: nightly
           target: wasm32-unknown-unknown
           override: true
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: just@1
       - name: Rust Cache # cache the rust build artefacts
         uses: Swatinem/rust-cache@v2
       - name: Download and install tailwindcss binary
-        run: just install-tailwindcss
+        run: npm install -D tailwindcss
       - name: Download and install Trunk binary
         run: wget -qO- https://github.com/thedodd/trunk/releases/latest/download/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
       - name: Build # build

@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
         with:
           components: clippy, rustfmt
       - uses: Swatinem/rust-cache@v2
@@ -49,7 +49,7 @@ jobs:
       - uses: actions-rs/toolchain@v1 # get rust toolchain for wasm
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: nightly
           target: wasm32-unknown-unknown
           override: true
       - name: Rust Cache # cache the rust build artefacts

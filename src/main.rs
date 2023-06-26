@@ -1,102 +1,71 @@
-use async_trait::async_trait;
 use leptos::*;
-use leptos_struct_table::*;
-use rand::{distributions::Standard, prelude::Distribution, thread_rng, Rng};
-use serde::{Deserialize, Serialize};
-use std::io::BufReader;
-use word_generator::{langs, *};
+use leptos_router::*;
 
-#[derive(TableComponent, Serialize, Deserialize, Debug, Clone, Default, PartialEq)]
-#[table(sortable, classes_provider = "TableClasses")]
-pub struct User {
-    #[table(key)]
-    id: u32,
-    email: String,
-    given_name: String,
-    family_name: String,
-}
-//email
+const NAVT: &str = "block py-2 pl-3 pr-4 text-white rounded md:p-0 active:border-blue-500";
+const NAVB: &str =
+    "bg-white bg-gray-900 w-full z-20 top-0 left-0 border-b border-gray-200 border-gray-600";
+const NAVLIST: &str = "flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700";
 
 #[component]
-pub fn Users(cx: Scope, users: Vec<User>) -> impl IntoView {
-    // Create a few Person items
-    let items = create_rw_signal(cx, users);
-
-    // Use the generated component
-    view! { cx,
-        <UserTable items=items />
+pub fn RouterExample(cx: Scope) -> impl IntoView {
+    view! {
+      cx,
+      <div id="root">
+        // we wrap the whole app in a <Router/> to allow client-side navigation
+        // from our nav links below
+        <Router>
+          // <nav> and <main> will show on every route
+          <nav class=NAVB>
+          <ul class=NAVLIST >
+          <li class="-mb-px mr-1">
+            <A href="configuration" class=NAVT >"Configuration"</A>
+          </li>
+          <li class="-mb-px mr-1">
+            // But we can also use a normal class attribute like it is a normal component
+            <A href="settings" class=NAVT >"Settings"</A>
+            </li>
+            <li class="-mb-px mr-1">
+            // It also supports signals!
+            <A href="about" class=move || NAVT>"About"</A>
+            </li>
+            </ul>
+          </nav>
+          <main>
+            <Routes>
+              <Route path="configuration" view=move |cx| view! { cx,  <Configuration/> } >  </Route>
+              <Route path="settings" view=move |cx| view! { cx,  <Settings/> } > </Route>
+              <Route path="about" view=move |cx| view! { cx,  <About/> } > </Route>
+            </Routes>
+          </main>
+        </Router>
+      </div>
     }
 }
 
-fn random_users(amount: usize) -> Vec<User> {
-    thread_rng().sample_iter(&Standard).take(amount).collect()
-}
-
-impl Distribution<User> for Standard {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> User {
-        let reader = BufReader::new(langs::FR_TXT);
-        let words = generate_words(reader, 4, 2).unwrap();
-        let given_name = words[1].to_owned();
-        let family_name = words[0].to_owned();
-        User {
-            id: rng.gen::<u32>(),
-            email: format!("{}.{}@acme.com", given_name, family_name),
-            given_name,
-            family_name,
-        }
+#[component]
+fn Configuration(cx: Scope) -> impl IntoView {
+    view! {
+      cx,
+      <p>"This is Configuration."</p>
     }
 }
 
-// Easy to use with Trunk (trunkrs.dev) or with a simple wasm-bindgen setup
+#[component]
+fn About(cx: Scope) -> impl IntoView {
+    view! {
+      cx,
+      <p>"This is About."</p>
+    }
+}
+
+#[component]
+fn Settings(cx: Scope) -> impl IntoView {
+    view! {
+      cx,
+      <p>"This is Settings."</p>
+    }
+}
+
 pub fn main() {
-    let users = random_users(30);
-    mount_to_body(|cx| view! { cx,  <Users users=users /> })
-}
-
-#[derive(Clone, Copy)]
-pub struct TableClasses;
-
-impl TableClassesProvider for TableClasses {
-    fn new() -> Self {
-        Self
-    }
-
-    fn table(&self, classes: &str) -> String {
-        format!(
-            "{} {}",
-            "min-w-full table-fixed divide-y divide-gray-300", classes
-        )
-    }
-
-    fn head_row(&self, template_classes: &str) -> String {
-        format!(
-            "{} {}",
-            "min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900y",
-            template_classes
-        )
-    }
-
-    fn head_cell(&self, _sort: ColumnSort, template_classes: &str) -> String {
-        format!(
-            "cursor-pointer px-5 py-3 {} {}",
-            "text-black", template_classes
-        )
-    }
-
-    fn head_cell_inner(&self) -> String {
-        "flex items-center after:content-[--sort-icon] after:pl-1 after:opacity-40 before:content-[--sort-priority] before:order-last before:pl-0.5 before:font-light before:opacity-40".to_string()
-    }
-
-    fn row(&self, _row_index: usize, _selected: bool, template_classes: &str) -> String {
-        format!(
-            "{} {} {}",
-            "border-b dark:border-gray-700",
-            "whitespace-nowrap py-4 pr-3 text-sm font-medium text-gray-900",
-            template_classes
-        )
-    }
-
-    fn cell(&self, row_index_classes: &str) -> String {
-        format!("{} {}", "px-5 py-2", row_index_classes)
-    }
+    mount_to_body(|cx| view! { cx,  <RouterExample /> })
 }

@@ -6,14 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-leptos = { version="0.3.1" ,default-features = false, features=["csr","serde"]}
-leptos-struct-table = "0.2.1"
+leptos = { version="0.3.1" ,default-features = false, features=["csr","serde", "stable"]}
+leptos_router = { version="0.3.1" ,default-features = false, features=["csr" ,"stable"]}
 async-trait = "0.1.68"
 serde = "1.0.164"
-
-getrandom = { version = "0.2", features = ["js"] }
-rand = "0.8.5"
-word_generator = "0.1.1"
 
 log = "0.4"
 console_log = "1"

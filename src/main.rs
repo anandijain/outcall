@@ -47,6 +47,7 @@ fn Configuration(cx: Scope) -> impl IntoView {
     view! {
       cx,
       <p>"This is Configuration."</p>
+      <p>"This is Configuration."</p>
     }
 }
 
